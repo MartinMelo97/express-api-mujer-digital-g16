@@ -46,6 +46,45 @@ app.post('/movies', function(req, res) {
     return res.status(201).json(movies)
 });
 
+app.put('/movies/:id', function(req, res) {
+    const { id } = req.params;
+    const movieIndex = movies.findIndex(function (movie) {
+        return movie.id === Number(id);
+    });
+
+    if (movieIndex === -1) {
+        return res.status(404).json({
+            message: `La película con el ID ${id} no existe`,
+        })
+    }
+
+    const data = req.body;
+    const movie = movies[movieIndex];
+
+    const updatedMovie = Object.assign(movie, data);
+    movies[movieIndex] = updatedMovie;
+
+    return res.status(201).json(updatedMovie);
+});
+
+app.delete('/movies/:id', function(req, res) {
+    const { id } = req.params;
+    const movieIndex = movies.findIndex(function (movie) {
+        return movie.id === Number(id);
+    });
+
+    if (movieIndex === -1) {
+        return res.status(404).json({
+            message: `La película con el ID ${id} no existe`,
+        })
+    }
+
+    movies.splice(movieIndex, 1);
+
+    return res.status(200).json(movies);
+});
+
+
 // GET - POST - PUT - PATCH - DELETE
 
 // -- Rutas de prueba --------------------------------------------------
