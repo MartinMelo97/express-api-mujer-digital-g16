@@ -42,6 +42,31 @@ app.post('/movies', function(req, res) {
     // 6. QUe el atributo cast si existe, sea un arreglo de string
     // y si no existe, pasar un arreglo vacio
 
+    // Validaciones
+    // 1. Que el ID que se envía no esté en otra película
+    const moviesIds = movies.map(function(movie) {
+        return movie.id;
+    });
+    if (moviesIds.includes(data.id)) {
+        return res.status(400).json({
+            message: `El ID ${data.id} ya está en uso`
+        })
+    }
+
+    // 2. Que el ID sea un número
+    if (Number.isNaN(Number(data.id)) || typeof(data.id) !== 'number') {
+        return res.status(400).json({
+            message: 'El ID debe de ser un número'
+        })
+    }
+
+    // 3. Que el atribuito name exista, sea un string y tenga al menos 3 caracteres
+    if (!data.name || typeof(data.name) !== 'string' || data.name.length < 3) {
+        return res.status(400).json({
+            message: 'El nombre debe de tener al menos 3 caracteres y ser alfanumérico'
+        })
+    }
+
     movies.push(data);
     return res.status(201).json(movies)
 });
